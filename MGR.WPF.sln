@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27703.2047
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MGR.WPF", "MGR.WPF\MGR.WPF.csproj", "{A78F17D4-82B4-447E-A5C8-7C317BB901C1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MGR.WPF.DatabaseServices", "MGR.WPF.DatabaseServices\MGR.WPF.DatabaseServices.csproj", "{590BC18B-F68B-4B56-B6E2-C26C19AEE053}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{A78F17D4-82B4-447E-A5C8-7C317BB901C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A78F17D4-82B4-447E-A5C8-7C317BB901C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A78F17D4-82B4-447E-A5C8-7C317BB901C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{590BC18B-F68B-4B56-B6E2-C26C19AEE053}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{590BC18B-F68B-4B56-B6E2-C26C19AEE053}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{590BC18B-F68B-4B56-B6E2-C26C19AEE053}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{590BC18B-F68B-4B56-B6E2-C26C19AEE053}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
