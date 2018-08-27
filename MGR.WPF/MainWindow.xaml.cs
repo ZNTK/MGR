@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MGR.WPF.DatabaseServices;
+using MGR.WPF.MethodsServices.Filters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +25,20 @@ namespace MGR.WPF
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            DatabaseService databaseService = new DatabaseService();
+            var lista = databaseService.Get("ARCENE_TRAIN","Column1");
+
+            var cotam = lista.Select(x => x["Column1"]);
+
+            var listaX = databaseService.Get("ARCENE_TRAIN", "Column1");
+            var listaY = databaseService.Get("ARCENE_TRAIN", "Column2");
+
+            PearsonCorrelation pearsonCorrelation = new PearsonCorrelation();
+            pearsonCorrelation.CompereTwoFeatures(listaX.Select(x => x["Column1"]).ToList(), listaY.Select(x => x["Column2"]).ToList());
         }
     }
 }
