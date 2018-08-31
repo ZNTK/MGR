@@ -22,13 +22,13 @@ namespace MGR.WPF.DatabaseServices
 
         public IMongoQueryable<BsonDocument> Get(string collectionName)
         {
-            return mongoDatabase.GetCollection<BsonDocument>(collectionName).AsQueryable();  
+            return mongoDatabase.GetCollection<BsonDocument>(collectionName).AsQueryable();
         }
 
         public List<IDictionary<String, Int32>> Get(string collectionName, string columnName)
         {
-            var cos =  mongoDatabase.GetCollection<KeyValuePair<string,string>>(collectionName).Find(Builders<KeyValuePair<string, string>>.Filter.Empty).Project(Builders<KeyValuePair<string, string>>.Projection.Include(columnName).Exclude("_id")).ToList();
-            
+            var cos = mongoDatabase.GetCollection<KeyValuePair<string, string>>(collectionName).Find(Builders<KeyValuePair<string, string>>.Filter.Empty).Project(Builders<KeyValuePair<string, string>>.Projection.Include(columnName).Exclude("_id")).ToList();
+
             List<IDictionary<String, Int32>> keyValuePairs = new List<IDictionary<String, Int32>>();
             foreach (var item in cos)
             {
@@ -36,10 +36,20 @@ namespace MGR.WPF.DatabaseServices
             }
             var sasadas = keyValuePairs[0][columnName];
 
-            
+
             return keyValuePairs;
         }
 
+        public List<List<int>> ConvertMongoColectionToListOfLists(int featuresCount, string collectionName)
+        {
+            List<List<int>> listOfLists = new List<List<int>>();
+            for (int i = 0; i < featuresCount; i++)
+            {
+                var column = Get(collectionName, $"Column{i+1}");
+                listOfLists.Add(column.Select(x => x[$"Column{i + 1}"]).ToList());
+            }
+            return listOfLists;
+        }
 
     }
 }

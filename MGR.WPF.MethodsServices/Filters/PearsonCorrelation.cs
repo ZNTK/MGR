@@ -35,7 +35,8 @@ namespace MGR.WPF.MethodsServices.Filters
            
         public double[,] MakeCorelationTable(int featuresCount, string collectionName)
         {
-            double[,] corelationArray = new double[featuresCount + 1, featuresCount + 1];
+            var dataSet = databaseService.ConvertMongoColectionToListOfLists(featuresCount, collectionName);
+            double[,] corelationArray = new double[featuresCount, featuresCount];
             //Stopwatch stopWatch = new Stopwatch();
             //stopWatch.Start();
             //for (int i = 1; i <= featuresCount; i++)
@@ -54,23 +55,33 @@ namespace MGR.WPF.MethodsServices.Filters
             //stopWatch.Stop();
 
             List<int> numbers = new List<int>();
-            for (int i = 1; i <= featuresCount; i++)
+            for (int i = 0; i < featuresCount; i++)
             {
                 numbers.Add(i);
             }
 
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
+            //Stopwatch stopWatch = new Stopwatch();
+            //stopWatch.Start();
+            //Parallel.ForEach(numbers, (elementX) =>
+            //{
+            //    var listX = databaseService.Get(collectionName, $"Column{elementX}");
+            //    Parallel.ForEach(numbers, (elementY) =>
+            //    {
+            //        var listY = databaseService.Get(collectionName, $"Column{elementY}");
+            //        corelationArray[elementX, elementY] = CompereTwoFeatures(listX.Select(x => x[$"Column{elementX}"]).ToList(), listY.Select(x => x[$"Column{elementY}"]).ToList());
+            //    });
+            //});
+            //stopWatch.Stop();
+
             Parallel.ForEach(numbers, (elementX) =>
             {
-                var listX = databaseService.Get(collectionName, $"Column{elementX}");
-                Parallel.ForEach(numbers, (elementY) =>
+                var listX = dataSet[elementX + 1];
+                for (int i = 0; i < featuresCount; i++)
                 {
-                    var listY = databaseService.Get(collectionName, $"Column{elementY}");
-                    corelationArray[elementX, elementY] = CompereTwoFeatures(listX.Select(x => x[$"Column{elementX}"]).ToList(), listY.Select(x => x[$"Column{elementY}"]).ToList());
-                });
+                    corelationArray[elementX, i] = CompereTwoFeatures(listX, dataSet[i + 1]);
+                }
             });
-            stopWatch.Stop();
+
             return corelationArray;
         }
         
