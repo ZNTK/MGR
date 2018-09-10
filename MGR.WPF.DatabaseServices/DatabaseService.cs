@@ -27,14 +27,13 @@ namespace MGR.WPF.DatabaseServices
 
         public List<IDictionary<String, Int32>> Get(string collectionName, string columnName)
         {
-            var cos = mongoDatabase.GetCollection<KeyValuePair<string, string>>(collectionName).Find(Builders<KeyValuePair<string, string>>.Filter.Empty).Project(Builders<KeyValuePair<string, string>>.Projection.Include(columnName).Exclude("_id")).ToList();
+            var result = mongoDatabase.GetCollection<KeyValuePair<string, string>>(collectionName).Find(Builders<KeyValuePair<string, string>>.Filter.Empty).Project(Builders<KeyValuePair<string, string>>.Projection.Include(columnName).Exclude("_id")).ToList();
 
             List<IDictionary<String, Int32>> keyValuePairs = new List<IDictionary<String, Int32>>();
-            foreach (var item in cos)
+            foreach (var item in result)
             {
                 keyValuePairs.Add(BsonSerializer.Deserialize<IDictionary<String, Int32>>(item));
             }
-            var sasadas = keyValuePairs[0][columnName];
 
 
             return keyValuePairs;
@@ -51,5 +50,32 @@ namespace MGR.WPF.DatabaseServices
             return listOfLists;
         }
 
+        //public List<IDictionary<String, Int32>> GetWithID(string collectionName, string columnName)
+        //{
+        //    var result = mongoDatabase.GetCollection<KeyValuePair<string, string>>(collectionName).Find(Builders<KeyValuePair<string, string>>.Filter.Empty).Project(Builders<KeyValuePair<string, string>>.Projection.Include(columnName)).ToList();
+
+        //    List<KeyPairWithId> keyValuePairs = new List<KeyPairWithId>();
+        //    foreach (var item in result)
+        //    {
+        //        keyValuePairs.Add(BsonSerializer.Deserialize<IDictionary<String, Int32>>(item));
+        //    }
+
+
+        //    return keyValuePairs;
+        //}
+
+
+    }
+
+    public class KeyPairWithId
+    {
+        public Guid id { get; set; }
+        public IDictionary<String, Int32> keyValuePair { get; set; }
+
+        public KeyPairWithId(Guid id, IDictionary<String, Int32> keyValuePair)
+        {
+            this.id = id;
+            this.keyValuePair = keyValuePair;
+        }
     }
 }

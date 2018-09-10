@@ -35,7 +35,10 @@ namespace MGR.WPF.MethodsServices.Filters
            
         public double[,] MakeCorelationTable(int featuresCount, string collectionName)
         {
+            Stopwatch stopWatch1 = new Stopwatch();
+            stopWatch1.Start();
             var dataSet = databaseService.ConvertMongoColectionToListOfLists(featuresCount, collectionName);
+            stopWatch1.Stop();
             double[,] corelationArray = new double[featuresCount, featuresCount];
             //Stopwatch stopWatch = new Stopwatch();
             //stopWatch.Start();
@@ -72,16 +75,48 @@ namespace MGR.WPF.MethodsServices.Filters
             //    });
             //});
             //stopWatch.Stop();
-
+            //for (int j = 0; j < featuresCount; j++)
+            //{
+            //    Stopwatch stopWatch = new Stopwatch();
+            //    stopWatch.Start();
+            //    var listX = dataSet[j];
+            //    for (int i = 0; i < featuresCount; i++)
+            //    {
+            //        corelationArray[j, i] = CompereTwoFeatures(listX, dataSet[i]);
+            //    }
+            //    stopWatch.Stop();
+            //}
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
             Parallel.ForEach(numbers, (elementX) =>
             {
-                var listX = dataSet[elementX + 1];
+                Console.WriteLine($"robie numer {elementX} czas: {stopWatch.ElapsedMilliseconds}");
+                var listX = dataSet[elementX];
                 for (int i = 0; i < featuresCount; i++)
                 {
-                    corelationArray[elementX, i] = CompereTwoFeatures(listX, dataSet[i + 1]);
+                    corelationArray[elementX, i] = Math.Abs(CompereTwoFeatures(listX, dataSet[i]));
                 }
+                Console.WriteLine($"koniec numer {elementX} czas: {stopWatch.ElapsedMilliseconds}");
             });
+            
 
+            double max = 0.00;
+            string jakiXY = "";
+            for (int i = 0; i < 1000; i++)
+            {
+                for (int j = 0; j < 1000; j++)
+                {
+                    if(i != j)
+                    {
+                        if(corelationArray[i,j] > max)
+                        {
+                            max = corelationArray[i, j];
+                            jakiXY = $"{i} {j}";
+                        }
+                    }
+                }
+            }
+            stopWatch.Stop();
             return corelationArray;
         }
         

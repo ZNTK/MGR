@@ -41,7 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Filters\FiltersHelper.cs" />
     <Compile Include="Filters\PearsonCorrelation.cs" />
+    <Compile Include="Filters\SpearmanCorrelation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
