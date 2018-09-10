@@ -25,27 +25,27 @@ namespace MGR.WPF.DatabaseServices
             return mongoDatabase.GetCollection<BsonDocument>(collectionName).AsQueryable();
         }
 
-        public List<IDictionary<String, Int32>> Get(string collectionName, string columnName)
+        public List<IDictionary<String, double>> Get(string collectionName, string columnName)
         {
             var result = mongoDatabase.GetCollection<KeyValuePair<string, string>>(collectionName).Find(Builders<KeyValuePair<string, string>>.Filter.Empty).Project(Builders<KeyValuePair<string, string>>.Projection.Include(columnName).Exclude("_id")).ToList();
 
-            List<IDictionary<String, Int32>> keyValuePairs = new List<IDictionary<String, Int32>>();
+            List<IDictionary<String, double>> keyValuePairs = new List<IDictionary<String, double>>();
             foreach (var item in result)
             {
-                keyValuePairs.Add(BsonSerializer.Deserialize<IDictionary<String, Int32>>(item));
+                keyValuePairs.Add(BsonSerializer.Deserialize<IDictionary<String, double>>(item));
             }
 
 
             return keyValuePairs;
         }
 
-        public List<List<int>> ConvertMongoColectionToListOfLists(int featuresCount, string collectionName)
+        public List<List<double>> ConvertMongoColectionToListOfLists(int featuresCount, string collectionName)
         {
-            List<List<int>> listOfLists = new List<List<int>>();
+            List<List<double>> listOfLists = new List<List<double>>();
             for (int i = 0; i < featuresCount; i++)
             {
                 var column = Get(collectionName, $"Column{i+1}");
-                listOfLists.Add(column.Select(x => x[$"Column{i + 1}"]).ToList());
+                listOfLists.Add(column.Select(x => (double)x[$"Column{i + 1}"]).ToList());
             }
             return listOfLists;
         }
