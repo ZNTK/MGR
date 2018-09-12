@@ -91,11 +91,13 @@ namespace MGR.WPF.MethodsServices.Filters
 
         public double[,] MakeCorelationTable(int featuresCount, string collectionName)
         {
-            Stopwatch stopWatch1 = new Stopwatch();
-            stopWatch1.Start();
+            Stopwatch stopWatchMakeTable = new Stopwatch();
+            stopWatchMakeTable.Start();
             var dataSet = databaseService.ConvertMongoColectionToListOfLists(featuresCount, collectionName);
+            stopWatchMakeTable.Stop();
 
-
+            stopWatchMakeTable.Stop();
+            Stopwatch stopWatchMakeRankingTable = new Stopwatch();
             FiltersHelper filtersHelper = new FiltersHelper();
             List<List<double>> rankDataSet = new List<List<double>>();
             foreach (var item in dataSet)
@@ -103,8 +105,8 @@ namespace MGR.WPF.MethodsServices.Filters
                 var result = filtersHelper.RankFeature(item);
                 rankDataSet.Add(result);
             }
+            stopWatchMakeRankingTable.Stop();
 
-            stopWatch1.Stop();
             double[,] corelationArray = new double[featuresCount, featuresCount];
             
 
@@ -112,43 +114,27 @@ namespace MGR.WPF.MethodsServices.Filters
             stopWatch.Start();
             Parallel.ForEach(rankDataSet, (rankList, state, index) =>
             {
-                Console.WriteLine($"robie numer {index} czas: {stopWatch.ElapsedMilliseconds}");
+                //Console.WriteLine($"robie numer {index} czas: {stopWatch.ElapsedMilliseconds}");
                 for (int i = (int)index + 1; i < featuresCount; i++)
                 {
-                    //if(index == 11 && i == 13)
-                    //{
-                    //    var csv = new StringBuilder();
-                    //    for (int j = 0; j < rankList.Count; j++)
-                    //    {
-                    //        csv.AppendLine($"{rankList[j]};{rankDataSet[i][j]};");
-                    //    }
-                    //    File.WriteAllText($"E://cos//dobrytestczemuduze.txt", csv.ToString());
-                    //}
                     corelationArray[(int)index, i] = Math.Abs(CompereTwoFeatures(rankList, rankDataSet[i]));
                 }
-                Console.WriteLine($"koniec numer {index} czas: {stopWatch.ElapsedMilliseconds}");
+                //Console.WriteLine($"koniec numer {index} czas: {stopWatch.ElapsedMilliseconds}");
             });
-
-
-            double max = 0.00;
-            string jakiXY = "";
-            for (int i = 0; i < 1000; i++)
-            {
-                for (int j = 0; j < 1000; j++)
-                {
-                    if (i != j)
-                    {
-                        if (corelationArray[i, j] > max)
-                        {
-                            max = corelationArray[i, j];
-                            jakiXY = $"{i} {j}";
-                        }
-                    }
-                }
-            }
             stopWatch.Stop();
+
+            var times = new StringBuilder();
+
+            times.AppendLine($"Czas tworzenia tabeli z  danymi pozyskanymi z MongoDB: {stopWatchMakeTable.ElapsedMilliseconds}");
+            times.AppendLine($"Czas tworzenia tabeli zrankingowanych danych: {stopWatchMakeRankingTable.ElapsedMilliseconds}");
+            times.AppendLine($"Czas wykonywania sie algorytmu dla wszystkich zmiennych: {stopWatch.ElapsedMilliseconds}");
+
+            filtersHelper.GetTimesAndWriteToFile(times, collectionName, "Kendall");
+
             return corelationArray;
         }
+
+
     }
 
     public class TwoFeatures

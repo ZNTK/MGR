@@ -7,9 +7,16 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="149,96,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="617,298,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="190,318,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_2"/>
+        <Button Content="Pearson" HorizontalAlignment="Left" Margin="149,96,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+        <Button Content="Spearman" HorizontalAlignment="Left" Margin="149,121,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
+        <Button Content="Kendall" HorizontalAlignment="Left" Margin="149,146,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_2"/>
+        <TextBox Name="CollectionName" HorizontalAlignment="Left" Height="23" Margin="426,96,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <TextBox Name="FeatureCount" HorizontalAlignment="Left" Height="23" Margin="426,146,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <Label Content="Collection Name
+               " HorizontalAlignment="Left" Margin="271,96,0,0" VerticalAlignment="Top"/>
+        <Label Content="Liczba cech:" HorizontalAlignment="Left" Margin="271,146,0,0" VerticalAlignment="Top"/>
+        <Label Content="Ile cech wyselekcjonowac" HorizontalAlignment="Left" Margin="271,203,0,0" VerticalAlignment="Top"/>
+        <TextBox Name="FeatureToSelectCount" HorizontalAlignment="Left" Height="23" Margin="426,207,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
 
     </Grid>
 </Window>

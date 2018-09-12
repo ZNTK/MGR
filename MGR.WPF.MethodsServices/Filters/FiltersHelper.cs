@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -46,6 +48,54 @@ namespace MGR.WPF.MethodsServices.Filters
             }
 
             return numberRanks.OrderBy(x=>x.Id).Select(r => r.Rank).ToList();
+        }
+
+        public void SelectFeaturesAndWriteToFile(double[,] corelationArray, int featuresToSelect, string fileName, int featuresCount)
+        {
+            List<IdNumber> corelationAvg = new List<IdNumber>();
+            for (int i = 0; i < featuresCount; i++)
+            {
+                double sum = 0.00;
+                for (int j = 0; j < featuresCount; j++)
+                {
+                    if (i != j)
+                    {
+                        if (i < j)
+                        {
+                            sum += corelationArray[i, j];
+                        }
+                        else
+                        {
+                            sum += corelationArray[j, i];
+                        }
+                    }
+                }
+                corelationAvg.Add(new IdNumber(i, (sum / (featuresCount - 1))));
+            }
+
+            var corelationAvgOrdered = corelationAvg.OrderByDescending(x => x.Number).ToList() ;
+
+            var result = new StringBuilder();
+
+            result.AppendLine("Średnie wyniki korelacji dla poszczególnych zmiennych:");
+            foreach (var item in corelationAvg)
+            {
+                result.AppendLine($"Column{item.Id + 1};{item.Number};");
+            }
+            result.AppendLine("Wyselekcjonowane zmienne i ich srednie korelacji:");
+            foreach (var item in corelationAvgOrdered.Take(featuresToSelect))
+            {
+                result.AppendLine($"Column{item.Id +1};{item.Number};");
+            }
+            result.AppendLine($"Zostało wyselekcjonowanych {featuresToSelect.ToString()} zmiennych.");
+            File.WriteAllText($"E://cos//wynikiDobreDoMGR//ZbiorDanych1_{fileName}_selectionResult_{DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss")}.txt", result.ToString());
+        }
+
+        public void GetTimesAndWriteToFile(StringBuilder times, string collectionName, string methodName)
+        {
+            
+
+            File.WriteAllText($"E://cos//wynikiDobreDoMGR//{methodName}_{collectionName}_times_{DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss")}.txt", times.ToString());
         }
     }
 
