@@ -59,7 +59,7 @@ namespace MGR.WPF
 
 
             FiltersHelper filtersHelper = new FiltersHelper();
-            filtersHelper.SelectFeaturesAndWriteToFile(wynik, featureToSelectCount, "Pearson", featureCount);
+            filtersHelper.SelectFeaturesAndWriteToFile(wynik, featureToSelectCount, "Pearson_" + collectionName, featureCount);
             MessageBox.Show("Wykonano obliczenia.");
         }
 
@@ -90,7 +90,7 @@ namespace MGR.WPF
             File.WriteAllText($"E://cos//wynikiDobreDoMGR//Spearman_{collectionName}_corelationTable_{DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss")}.txt", csv.ToString());
             
             FiltersHelper filtersHelper = new FiltersHelper();
-            filtersHelper.SelectFeaturesAndWriteToFile(wynik, featureToSelectCount, "Spearman", featureCount);
+            filtersHelper.SelectFeaturesAndWriteToFile(wynik, featureToSelectCount, "Spearman_" + collectionName, featureCount);
 
             MessageBox.Show("Wykonano obliczenia.");
         }
@@ -120,7 +120,7 @@ namespace MGR.WPF
 
             File.WriteAllText($"E://cos//wynikiDobreDoMGR//Kendall_{collectionName}_corelationTable_{DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss")}.txt", csv.ToString());
             FiltersHelper filtersHelper = new FiltersHelper();
-            filtersHelper.SelectFeaturesAndWriteToFile(wynik, featureToSelectCount, "Kendall", featureCount);
+            filtersHelper.SelectFeaturesAndWriteToFile(wynik, featureToSelectCount, "Kendall_" + collectionName, featureCount);
             
             MessageBox.Show("Wykonano obliczenia.");
         }

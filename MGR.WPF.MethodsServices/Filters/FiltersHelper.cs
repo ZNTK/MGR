@@ -88,14 +88,48 @@ namespace MGR.WPF.MethodsServices.Filters
                 result.AppendLine($"Column{item.Id +1};{item.Number};");
             }
             result.AppendLine($"Zostało wyselekcjonowanych {featuresToSelect.ToString()} zmiennych.");
-            File.WriteAllText($"E://cos//wynikiDobreDoMGR//ZbiorDanych1_{fileName}_selectionResult_{DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss")}.txt", result.ToString());
+
+            result.AppendLine($"Najlepiej skorelowane zmienne:");
+
+            var corelationPairsBest = SelectCorelationPairs(corelationArray, featuresCount, true);
+            foreach (var item in corelationPairsBest)
+            {
+                result.AppendLine($"Column{item.Id1};Column{item.Id2};{item.Number}");
+            }
+            result.AppendLine($"Nasłabiej skorelowane zmienne:");
+
+            var corelationPairsWorst = SelectCorelationPairs(corelationArray, featuresCount, false);
+            foreach (var item in corelationPairsWorst)
+            {
+                result.AppendLine($"Column{item.Id1};Column{item.Id2};{item.Number}");
+            }
+            File.WriteAllText($"E://cos//wynikiDobreDoMGR//{fileName}_selectionResult_{DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss")}.txt", result.ToString());
         }
 
         public void GetTimesAndWriteToFile(StringBuilder times, string collectionName, string methodName)
         {
-            
-
             File.WriteAllText($"E://cos//wynikiDobreDoMGR//{methodName}_{collectionName}_times_{DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss")}.txt", times.ToString());
+        }
+
+        public List<CorelationPair> SelectCorelationPairs(double[,] corelationArray, int featuresCount, bool best)
+        {
+            List<CorelationPair> corelationPairs = new List<CorelationPair>();
+
+            for (int i = 0; i < featuresCount; i++)
+            {
+                for (int j = i + 1; j < featuresCount; j++)
+                {
+                    corelationPairs.Add(new CorelationPair(i, j, corelationArray[i, j]));
+                }
+            }
+            if (best)
+            {
+                return corelationPairs.OrderByDescending(x => x.Number).Take(5).ToList();
+            }
+            else
+            {
+                return corelationPairs.OrderBy(x => x.Number).Take(5).ToList();
+            }
         }
     }
 
@@ -120,6 +154,20 @@ namespace MGR.WPF.MethodsServices.Filters
         public IdNumber(int id, double number)
         {
             Id = id;
+            Number = number;
+        }
+    }
+
+    public class CorelationPair
+    {
+        public int Id1 { get; set; }
+        public int Id2 { get; set; }
+        public double Number { get; set; }
+
+        public CorelationPair(int id1, int id2, double number)
+        {
+            Id1 = id1;
+            Id2 = id2;
             Number = number;
         }
     }
