@@ -44,23 +44,25 @@ namespace MGR.WPF.MethodsServices.Filters
 
 
             double[,] corelationArray = new double[featuresCount, featuresCount];
-            
+
             //List<int> numbers = new List<int>();
             //for (int i = 0; i < featuresCount; i++)
             //{
             //    numbers.Add(i);
             //}
-            
+            int licznik = 0;
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
             Parallel.ForEach(rankDataSet, (rankList, state, index) =>
             {
-                Console.WriteLine($"robie numer {index} czas: {stopWatch.ElapsedMilliseconds}");
+                //Console.WriteLine($"robie numer {index} czas: {stopWatch.ElapsedMilliseconds}");
                 for (int i = (int)index + 1; i < featuresCount; i++)
                 {
                     corelationArray[(int)index, i] = Math.Abs(CompereTwoFeatures(rankList, rankDataSet[i]));
                 }
-                Console.WriteLine($"koniec numer {index} czas: {stopWatch.ElapsedMilliseconds}");
+                //Console.WriteLine($"koniec numer {index} czas: {stopWatch.ElapsedMilliseconds}");
+                licznik++;
+                Console.WriteLine($"koniec numer {licznik} czas: {stopWatch.ElapsedMilliseconds}");
             });
             stopWatch.Stop();
 

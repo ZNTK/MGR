@@ -43,7 +43,7 @@ namespace MGR.WPF.MethodsServices.Filters
             var dataSet = databaseService.ConvertMongoColectionToListOfLists(featuresCount, collectionName);
             stopWatchMakeTable.Stop();
             double[,] corelationArray = new double[featuresCount, featuresCount];
-            
+            int licznik = 0;
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
             Parallel.ForEach(dataSet, (list, state, index) =>
@@ -52,6 +52,8 @@ namespace MGR.WPF.MethodsServices.Filters
                 {
                     corelationArray[(int)index, i] = Math.Abs(CompereTwoFeatures(list, dataSet[i]));
                 }
+                licznik++;
+                Console.WriteLine($"koniec numer {licznik} czas: {stopWatch.ElapsedMilliseconds}");
             });
             
             stopWatch.Stop();

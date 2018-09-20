@@ -42,10 +42,10 @@ namespace MGR.WPF
 
             //before your loop
             var csv = new StringBuilder();
-            for (int i = 0; i < featureCount; i++)
+            for (int i = 0; i < 100; i++)
             {
                 var newLine = string.Empty;
-                for (int j = 0; j < featureCount; j++)
+                for (int j = 0; j < 100; j++)
                 {
                     newLine += wynik[i, j].ToString() + ";";
                 }
@@ -77,10 +77,10 @@ namespace MGR.WPF
 
             //before your loop
             var csv = new StringBuilder();
-            for (int i = 0; i < featureCount; i++)
+            for (int i = 0; i < 100; i++)
             {
                 var newLine = string.Empty;
-                for (int j = 0; j < featureCount; j++)
+                for (int j = 0; j < 100; j++)
                 {
                     newLine += wynik[i, j].ToString() + ";";
                 }
@@ -108,10 +108,10 @@ namespace MGR.WPF
             var wynik = kendallCorelation.MakeCorelationTable(featureCount, collectionName);
             
             var csv = new StringBuilder();
-            for (int i = 0; i < featureCount; i++)
+            for (int i = 0; i < 100; i++)
             {
                 var newLine = string.Empty;
-                for (int j = 0; j < featureCount; j++)
+                for (int j = 0; j < 100; j++)
                 {
                     newLine += wynik[i, j].ToString() + ";";
                 }
