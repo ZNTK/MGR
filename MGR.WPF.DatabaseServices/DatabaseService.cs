@@ -42,7 +42,7 @@ namespace MGR.WPF.DatabaseServices
         public List<List<double>> ConvertMongoColectionToListOfLists(int featuresCount, string collectionName)
         {
             List<List<double>> listOfLists = new List<List<double>>();
-            for (int i = 0; i < featuresCount; i++)
+            for (int i = -1; i < featuresCount; i++)
             {
                 var column = Get(collectionName, $"Column{i+1}");
                 listOfLists.Add(column.Select(x => (double)x[$"Column{i + 1}"]).ToList());

@@ -1,4 +1,5 @@
 ﻿using MGR.WPF.DatabaseServices;
+using MGR.WPF.MethodsServices.Classifier;
 using MGR.WPF.MethodsServices.Filters;
 using System;
 using System.Collections.Generic;
@@ -123,6 +124,22 @@ namespace MGR.WPF
             filtersHelper.SelectFeaturesAndWriteToFile(wynik, featureToSelectCount, "Kendall_" + collectionName, featureCount);
             
             MessageBox.Show("Wykonano obliczenia.");
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            string collectionName = CollectionName.Text;
+            int featureCount = int.Parse(FeatureCount.Text);
+            int featureToSelectCount = int.Parse(FeatureToSelectCount.Text);
+
+            DatabaseService databaseService = new DatabaseService();
+            var dataSet = databaseService.ConvertMongoColectionToListOfLists(featureCount, collectionName);
+
+            NaiveBayesClassifier naiveBayesClassifier = new NaiveBayesClassifier();
+
+            naiveBayesClassifier.GenerateProbabilites(dataSet, collectionName);
+
+            var result = naiveBayesClassifier.GetProbabilityOfFeatureValuesFormFile(collectionName);
         }
     }
 }

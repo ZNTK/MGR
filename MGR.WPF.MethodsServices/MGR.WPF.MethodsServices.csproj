@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classifiers\NaiveBayesClassifier.cs" />
     <Compile Include="FeatureSelection\FeatureSelection.cs" />
     <Compile Include="Filters\FiltersHelper.cs" />
     <Compile Include="Filters\KendallCorelation.cs" />
