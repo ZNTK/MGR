@@ -62,7 +62,7 @@ namespace MGR.WPF.MethodsServices.Classifier
             //csv2.AppendLine($"{classProbabilty.PositiveCount};{classProbabilty.NegativeCount};{classProbabilty.AllCount};");
             
 
-            var result = ClassifyAllTable(dataSet, classProbabilty, probabilityOfFeatureValues);
+            //var result = ClassifyAllTable(dataSet, classProbabilty, probabilityOfFeatureValues);
         }
 
         public ClassProbabilty GetClassProbabilty(List<List<double>> dataSet)
@@ -114,14 +114,32 @@ namespace MGR.WPF.MethodsServices.Classifier
         public List<bool> ClassifyAllTable(List<List<double>> dataSet, ClassProbabilty classProbabilty, List<ProbabilityOfFeatureValue> probabilityOfFeatureValues)
         {
             List<bool> classifyResult = new List<bool>();
-            List<IdNumber> idNumbersList = new List<IdNumber>();
             for (int i = 0; i < dataSet[0].Count; i++)
             {
+                List<IdNumber> idNumbersList = new List<IdNumber>();
                 for (int j = 0; j < dataSet.Count; j++)
                 {
                     idNumbersList.Add(new IdNumber(j, dataSet[j][i]));
                 }
                 classifyResult.Add(Classify(idNumbersList, classProbabilty, probabilityOfFeatureValues));
+                Console.WriteLine($"numer klasyfikacji: {i}");
+            }
+            return classifyResult;
+        }
+
+        public List<bool> ClassifyTableWithSelectedFeatures(List<List<double>> dataSet, ClassProbabilty classProbabilty, List<ProbabilityOfFeatureValue> probabilityOfFeatureValues, List<IdNumber> selectedFeaturesWithCorrelation)
+        {
+            List<bool> classifyResult = new List<bool>();
+            
+            for (int i = 0; i < dataSet[0].Count; i++)
+            {
+                List<IdNumber> idNumbersList = new List<IdNumber>();
+                foreach (var item in selectedFeaturesWithCorrelation)
+                {
+                    idNumbersList.Add(new IdNumber(item.Id, dataSet[item.Id][i]));
+                }
+                classifyResult.Add(Classify(idNumbersList, classProbabilty, probabilityOfFeatureValues));
+                Console.WriteLine($"numer klasyfikacji: {i}");
             }
             return classifyResult;
         }
@@ -129,6 +147,7 @@ namespace MGR.WPF.MethodsServices.Classifier
 
         public List<ProbabilityOfFeatureValue> GetProbabilityOfFeatureValuesFormFile(string collectionName)
         {
+            Console.WriteLine("Czytanie danych z pliku");
             using (var reader = new StreamReader($"E://cos//wynikiDobreDoMGR//Naive_Bayes_propTable_{collectionName}.txt"))
             {
                 List<ProbabilityOfFeatureValue> probabilityOfFeatureValues = new List<ProbabilityOfFeatureValue>();
@@ -139,6 +158,7 @@ namespace MGR.WPF.MethodsServices.Classifier
 
                     probabilityOfFeatureValues.Add(new ProbabilityOfFeatureValue(int.Parse(values[0]), double.Parse(values[1]), double.Parse(values[2]), double.Parse(values[3]), double.Parse(values[4])));
                 }
+                Console.WriteLine("Czytanie danych z pliku koniec");
                 return probabilityOfFeatureValues;
             }            
         }

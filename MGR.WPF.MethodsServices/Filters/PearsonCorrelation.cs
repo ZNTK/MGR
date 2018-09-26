@@ -36,19 +36,19 @@ namespace MGR.WPF.MethodsServices.Filters
             return sumUP / (Math.Sqrt(sumDWX) * Math.Sqrt(sumDWY));
         }
            
-        public double[,] MakeCorelationTable(int featuresCount, string collectionName)
+        public double[,] MakeCorelationTable(int featuresCount, string collectionName, List<List<double>> dataSet)
         {
-            Stopwatch stopWatchMakeTable = new Stopwatch();
-            stopWatchMakeTable.Start();
-            var dataSet = databaseService.ConvertMongoColectionToListOfLists(featuresCount, collectionName);
-            stopWatchMakeTable.Stop();
-            double[,] corelationArray = new double[featuresCount, featuresCount];
+            //Stopwatch stopWatchMakeTable = new Stopwatch();
+            //stopWatchMakeTable.Start();
+            
+            //stopWatchMakeTable.Stop();
+            double[,] corelationArray = new double[featuresCount + 1, featuresCount + 1];
             int licznik = 0;
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
             Parallel.ForEach(dataSet, (list, state, index) =>
             {
-                for (int i = (int)index + 1; i < featuresCount; i++)
+                for (int i = (int)index + 1; i < featuresCount + 1; i++)
                 {
                     corelationArray[(int)index, i] = Math.Abs(CompereTwoFeatures(list, dataSet[i]));
                 }
@@ -60,11 +60,11 @@ namespace MGR.WPF.MethodsServices.Filters
 
             var times = new StringBuilder();
 
-            times.AppendLine($"Czas tworzenia tabeli z  danymi pozyskanymi z MongoDB: {stopWatchMakeTable.ElapsedMilliseconds}");
-            times.AppendLine($"Czas wykonywania sie algorytmu dla wszystkich zmiennych: {stopWatch.ElapsedMilliseconds}");
+            //times.AppendLine($"Czas tworzenia tabeli z  danymi pozyskanymi z MongoDB: {stopWatchMakeTable.ElapsedMilliseconds}");
+            //times.AppendLine($"Czas wykonywania sie algorytmu dla wszystkich zmiennych: {stopWatch.ElapsedMilliseconds}");
 
-            FiltersHelper filtersHelper = new FiltersHelper();
-            filtersHelper.GetTimesAndWriteToFile(times, collectionName, "Pearson");
+            //FiltersHelper filtersHelper = new FiltersHelper();
+            //filtersHelper.GetTimesAndWriteToFile(times, collectionName, "Pearson");
 
             return corelationArray;
         }

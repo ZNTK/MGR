@@ -24,13 +24,8 @@ namespace MGR.WPF.MethodsServices.Filters
             }
             return 1 - ((6 * sumDi) / (featureX.Count * (Math.Pow(featureX.Count, 2) - 1)));
         }
-        public double[,] MakeCorelationTable(int featuresCount, string collectionName)
+        public double[,] MakeCorelationTable(int featuresCount, string collectionName, List<List<double>> dataSet)
         {
-            Stopwatch stopWatchMakeTable = new Stopwatch();
-            stopWatchMakeTable.Start();
-            var dataSet = databaseService.ConvertMongoColectionToListOfLists(featuresCount, collectionName);
-
-            stopWatchMakeTable.Stop();
             Stopwatch stopWatchMakeRankingTable = new Stopwatch();
             stopWatchMakeRankingTable.Start();
             FiltersHelper filtersHelper = new FiltersHelper();
@@ -43,7 +38,7 @@ namespace MGR.WPF.MethodsServices.Filters
             stopWatchMakeRankingTable.Stop();
 
 
-            double[,] corelationArray = new double[featuresCount, featuresCount];
+            double[,] corelationArray = new double[featuresCount +1, featuresCount+1];
 
             //List<int> numbers = new List<int>();
             //for (int i = 0; i < featuresCount; i++)
@@ -56,7 +51,7 @@ namespace MGR.WPF.MethodsServices.Filters
             Parallel.ForEach(rankDataSet, (rankList, state, index) =>
             {
                 //Console.WriteLine($"robie numer {index} czas: {stopWatch.ElapsedMilliseconds}");
-                for (int i = (int)index + 1; i < featuresCount; i++)
+                for (int i = (int)index + 1; i < featuresCount+1; i++)
                 {
                     corelationArray[(int)index, i] = Math.Abs(CompereTwoFeatures(rankList, rankDataSet[i]));
                 }
@@ -68,11 +63,11 @@ namespace MGR.WPF.MethodsServices.Filters
 
             var times = new StringBuilder();
 
-            times.AppendLine($"Czas tworzenia tabeli z  danymi pozyskanymi z MongoDB: {stopWatchMakeTable.ElapsedMilliseconds}");
-            times.AppendLine($"Czas tworzenia tabeli zrankingowanych danych: {stopWatchMakeRankingTable.ElapsedMilliseconds}");
-            times.AppendLine($"Czas wykonywania sie algorytmu dla wszystkich zmiennych: {stopWatch.ElapsedMilliseconds}");
+            //times.AppendLine($"Czas tworzenia tabeli z  danymi pozyskanymi z MongoDB: {stopWatchMakeTable.ElapsedMilliseconds}");
+            //times.AppendLine($"Czas tworzenia tabeli zrankingowanych danych: {stopWatchMakeRankingTable.ElapsedMilliseconds}");
+            //times.AppendLine($"Czas wykonywania sie algorytmu dla wszystkich zmiennych: {stopWatch.ElapsedMilliseconds}");
             
-            filtersHelper.GetTimesAndWriteToFile(times, collectionName, "Spearman");
+            //filtersHelper.GetTimesAndWriteToFile(times, collectionName, "Spearman");
 
             return corelationArray;
         }

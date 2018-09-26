@@ -1,8 +1,10 @@
 ﻿using MGR.WPF.DatabaseServices;
 using MGR.WPF.MethodsServices.Classifier;
+using MGR.WPF.MethodsServices.FeatureSelection;
 using MGR.WPF.MethodsServices.Filters;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -29,38 +31,44 @@ namespace MGR.WPF
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)//pearson
         {
             DatabaseService databaseService = new DatabaseService();
             
             string collectionName = CollectionName.Text;
             int featureCount = int.Parse(FeatureCount.Text);
-            int featureToSelectCount = int.Parse(FeatureToSelectCount.Text);
+            //int featureToSelectCount = int.Parse(FeatureToSelectCount.Text);
 
             PearsonCorrelation pearsonCorrelation = new PearsonCorrelation();
 
-            var wynik = pearsonCorrelation.MakeCorelationTable(featureCount, collectionName);
+            var dataSet = databaseService.ConvertMongoColectionToListOfLists(featureCount, collectionName);
+
+            var wynik = pearsonCorrelation.MakeCorelationTable(featureCount, collectionName, dataSet);
 
             //before your loop
             var csv = new StringBuilder();
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < featureCount + 1; i++)
             {
                 var newLine = string.Empty;
-                for (int j = 0; j < 100; j++)
+                for (int j = 0; j < featureCount + 1; j++)
                 {
                     newLine += wynik[i, j].ToString() + ";";
                 }
                 csv.AppendLine(newLine);
             }
             //var newLine = string.Format("{0},{1}", first, second);
-           
+
 
             //after your loop
             File.WriteAllText($"E://cos//wynikiDobreDoMGR//Pearson_{collectionName}_corelationTable_{DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss")}.txt", csv.ToString());
 
 
-            FiltersHelper filtersHelper = new FiltersHelper();
-            filtersHelper.SelectFeaturesAndWriteToFile(wynik, featureToSelectCount, "Pearson_" + collectionName, featureCount);
+            //FiltersHelper filtersHelper = new FiltersHelper();
+            //filtersHelper.SelectFeaturesAndWriteToFile(wynik, featureToSelectCount, "Pearson_" + collectionName, featureCount);
+
+
+            FeatureSelection featureSelection = new FeatureSelection();
+            featureSelection.SelectFeaturesAndCheckClasification(wynik, featureCount +1, dataSet, collectionName, "Pearson");
             MessageBox.Show("Wykonano obliczenia.");
         }
 
@@ -68,20 +76,20 @@ namespace MGR.WPF
         {
             string collectionName = CollectionName.Text;
             int featureCount = int.Parse(FeatureCount.Text);
-            int featureToSelectCount = int.Parse(FeatureToSelectCount.Text);
+            //int featureToSelectCount = int.Parse(FeatureToSelectCount.Text);
 
             DatabaseService databaseService = new DatabaseService();
-
+            var dataSet = databaseService.ConvertMongoColectionToListOfLists(featureCount, collectionName);
             SpearmanCorrelation spearmanCorrelation = new SpearmanCorrelation(); 
 
-            var wynik = spearmanCorrelation.MakeCorelationTable(featureCount, collectionName);
+            var wynik = spearmanCorrelation.MakeCorelationTable(featureCount, collectionName, dataSet);
 
-            //before your loop
+            ////before your loop
             var csv = new StringBuilder();
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < featureCount +1; i++)
             {
                 var newLine = string.Empty;
-                for (int j = 0; j < 100; j++)
+                for (int j = 0; j < featureCount +1 ; j++)
                 {
                     newLine += wynik[i, j].ToString() + ";";
                 }
@@ -89,10 +97,12 @@ namespace MGR.WPF
             }
 
             File.WriteAllText($"E://cos//wynikiDobreDoMGR//Spearman_{collectionName}_corelationTable_{DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss")}.txt", csv.ToString());
-            
-            FiltersHelper filtersHelper = new FiltersHelper();
-            filtersHelper.SelectFeaturesAndWriteToFile(wynik, featureToSelectCount, "Spearman_" + collectionName, featureCount);
 
+            //FiltersHelper filtersHelper = new FiltersHelper();
+            //filtersHelper.SelectFeaturesAndWriteToFile(wynik, featureToSelectCount, "Spearman_" + collectionName, featureCount);
+
+            FeatureSelection featureSelection = new FeatureSelection();
+            featureSelection.SelectFeaturesAndCheckClasification(wynik, featureCount +1, dataSet, collectionName, "Spearman");
             MessageBox.Show("Wykonano obliczenia.");
         }
 
@@ -100,19 +110,19 @@ namespace MGR.WPF
         {
             string collectionName = CollectionName.Text;
             int featureCount = int.Parse(FeatureCount.Text);
-            int featureToSelectCount = int.Parse(FeatureToSelectCount.Text);
+            //int featureToSelectCount = int.Parse(FeatureToSelectCount.Text);
 
             DatabaseService databaseService = new DatabaseService();
-
+            var dataSet = databaseService.ConvertMongoColectionToListOfLists(featureCount, collectionName);
             KendallCorelation kendallCorelation = new KendallCorelation();
 
-            var wynik = kendallCorelation.MakeCorelationTable(featureCount, collectionName);
-            
+            var wynik = kendallCorelation.MakeCorelationTable(featureCount, collectionName, dataSet);
+
             var csv = new StringBuilder();
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < featureCount +1; i++)
             {
                 var newLine = string.Empty;
-                for (int j = 0; j < 100; j++)
+                for (int j = 0; j < featureCount +1; j++)
                 {
                     newLine += wynik[i, j].ToString() + ";";
                 }
@@ -120,9 +130,12 @@ namespace MGR.WPF
             }
 
             File.WriteAllText($"E://cos//wynikiDobreDoMGR//Kendall_{collectionName}_corelationTable_{DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss")}.txt", csv.ToString());
-            FiltersHelper filtersHelper = new FiltersHelper();
-            filtersHelper.SelectFeaturesAndWriteToFile(wynik, featureToSelectCount, "Kendall_" + collectionName, featureCount);
-            
+            //FiltersHelper filtersHelper = new FiltersHelper();
+            //filtersHelper.SelectFeaturesAndWriteToFile(wynik, featureToSelectCount, "Kendall_" + collectionName, featureCount);
+
+            //MessageBox.Show("Wykonano obliczenia.");
+            FeatureSelection featureSelection = new FeatureSelection();
+            featureSelection.SelectFeaturesAndCheckClasification(wynik, featureCount +1, dataSet, collectionName, "Kendall");
             MessageBox.Show("Wykonano obliczenia.");
         }
 
@@ -130,16 +143,17 @@ namespace MGR.WPF
         {
             string collectionName = CollectionName.Text;
             int featureCount = int.Parse(FeatureCount.Text);
-            int featureToSelectCount = int.Parse(FeatureToSelectCount.Text);
+            //int featureToSelectCount = int.Parse(FeatureToSelectCount.Text);
 
             DatabaseService databaseService = new DatabaseService();
             var dataSet = databaseService.ConvertMongoColectionToListOfLists(featureCount, collectionName);
 
             NaiveBayesClassifier naiveBayesClassifier = new NaiveBayesClassifier();
-
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
             naiveBayesClassifier.GenerateProbabilites(dataSet, collectionName);
-
-            var result = naiveBayesClassifier.GetProbabilityOfFeatureValuesFormFile(collectionName);
+            stopWatch.Stop();
+            //var result = naiveBayesClassifier.GetProbabilityOfFeatureValuesFormFile(collectionName);
         }
     }
 }
